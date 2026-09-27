@@ -1,1 +1,1199 @@
+<!DOCTYPE html>
 
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BusRoute Navigator</title>
+
+<style>
+
+* {
+
+  box-sizing: border-box;
+
+}
+
+body {
+
+  margin: 0;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  background: #f2f4f7;
+
+  color: #17202a;
+
+}
+
+header {
+
+  background: #17202a;
+
+  color: white;
+
+  padding: 20px;
+
+  text-align: center;
+
+}
+
+header h1 {
+
+  margin: 0;
+
+  font-size: 25px;
+
+}
+
+header p {
+
+  margin: 6px 0 0;
+
+  opacity: .8;
+
+}
+
+.container {
+
+  max-width: 650px;
+
+  margin: auto;
+
+  padding: 18px;
+
+}
+
+.card {
+
+  background: white;
+
+  border-radius: 16px;
+
+  padding: 18px;
+
+  margin-bottom: 16px;
+
+  box-shadow: 0 3px 12px rgba(0,0,0,.08);
+
+}
+
+h2 {
+
+  margin-top: 0;
+
+}
+
+button {
+
+  width: 100%;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  padding: 16px;
+
+  margin: 7px 0;
+
+  font-size: 17px;
+
+  font-weight: 600;
+
+  background: #2563eb;
+
+  color: white;
+
+}
+
+button:active {
+
+  transform: scale(.98);
+
+}
+
+.stop-button {
+
+  min-height: 65px;
+
+}
+
+.pickup {
+
+  background: #16803c;
+
+}
+
+.dropoff {
+
+  background: #c2410c;
+
+}
+
+.school {
+
+  background: #7c3aed;
+
+}
+
+.other {
+
+  background: #475569;
+
+}
+
+.secondary {
+
+  background: #64748b;
+
+}
+
+.danger {
+
+  background: #b91c1c;
+
+}
+
+.mode-button {
+
+  background: #0f766e;
+
+}
+
+.hidden {
+
+  display: none;
+
+}
+
+.stop {
+
+  border-left: 5px solid #2563eb;
+
+  padding: 10px;
+
+  margin: 8px 0;
+
+  background: #f8fafc;
+
+  border-radius: 8px;
+
+}
+
+.status {
+
+  background: #eef2ff;
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  margin: 10px 0;
+
+  font-size: 14px;
+
+}
+
+.big-number {
+
+  font-size: 42px;
+
+  font-weight: 700;
+
+  text-align: center;
+
+}
+
+input, select {
+
+  width: 100%;
+
+  padding: 14px;
+
+  border: 1px solid #cbd5e1;
+
+  border-radius: 10px;
+
+  font-size: 16px;
+
+  margin: 6px 0 12px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <h1>🚌 BusRoute Navigator</h1>
+
+  <p>School Bus Route Prototype</p>
+
+</header>
+
+<div class="container">
+
+  <!-- HOME -->
+
+  <section id="home">
+
+    <div class="card">
+
+      <h2>Route Builder</h2>
+
+      <p>Create or record a permanent bus route.</p>
+
+      <button class="mode-button" onclick="openBuilder('Morning')">
+
+        🌅 Morning Route Builder
+
+      </button>
+
+      <button class="mode-button" onclick="openBuilder('Evening')">
+
+        🌆 Evening Route Builder
+
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Substitute Driver</h2>
+
+      <p>Navigate a saved route.</p>
+
+      <button onclick="openSubstitute()">
+
+        🚍 Start Route
+
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Other Trips</h2>
+
+      <button class="secondary">
+
+        🏫 Tech School Trip
+
+      </button>
+
+      <button class="secondary">
+
+        🏆 Athletic Trip
+
+      </button>
+
+      <button class="secondary">
+
+        ➡️ Express Route
+
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Administration</h2>
+
+      <button class="secondary" onclick="openAdmin()">
+
+        📊 Route Dashboard
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- ROUTE BUILDER -->
+
+  <section id="builder" class="hidden">
+
+    <div class="card">
+
+      <h2 id="builderTitle">Route Builder</h2>
+
+      <div class="status" id="gpsStatus">
+
+        📍 GPS has not been activated.
+
+      </div>
+
+      <label>Route Name</label>
+
+      <input id="routeName" placeholder="Example: Route 12">
+
+      <h3>Add Official Route Stop</h3>
+
+      <p>
+
+        Only press a button when the bus is actually at an
+
+        official route stop.
+
+      </p>
+
+      <button class="stop-button pickup" onclick="recordStop('Student Pickup')">
+
+        🟢 Student Pickup
+
+      </button>
+
+      <button class="stop-button dropoff" onclick="recordStop('Student Drop-off')">
+
+        🟠 Student Drop-off
+
+      </button>
+
+      <button class="stop-button school" onclick="recordStop('School')">
+
+        🟣 School
+
+      </button>
+
+      <button class="stop-button other" onclick="recordStop('Other Stop')">
+
+        ⚪ Other Stop
+
+      </button>
+
+      <div id="stopList"></div>
+
+      <button onclick="saveRoute()">
+
+        💾 Save Route
+
+      </button>
+
+      <button class="secondary" onclick="goHome()">
+
+        ← Back
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- SUBSTITUTE -->
+
+  <section id="substitute" class="hidden">
+
+    <div class="card">
+
+      <h2>🚍 Substitute Driver</h2>
+
+      <label>Choose Route</label>
+
+      <select id="routeSelect"></select>
+
+      <button onclick="startNavigation()">
+
+        ▶️ Start Navigation
+
+      </button>
+
+      <button class="secondary" onclick="goHome()">
+
+        ← Back
+
+      </button>
+
+    </div>
+
+    <div id="navigationPanel" class="card hidden">
+
+      <div class="big-number" id="stopCounter">
+
+        1
+
+      </div>
+
+      <h2 id="nextStop">Next Stop</h2>
+
+      <div class="status" id="navigationStatus">
+
+        Waiting for GPS...
+
+      </div>
+
+      <button class="danger" onclick="simulateArrival()">
+
+        🧪 TEST: Simulate Arrival
+
+      </button>
+
+      <p>
+
+        During a real route, the app will eventually use GPS
+
+        to automatically detect arrival at the predefined stop.
+
+      </p>
+
+    </div>
+
+  </section>
+
+  <!-- ADMIN -->
+
+  <section id="admin" class="hidden">
+
+    <div class="card">
+
+      <h2>📊 Route Dashboard</h2>
+
+      <div id="adminRoutes"></div>
+
+      <button class="secondary" onclick="goHome()">
+
+        ← Back
+
+      </button>
+
+    </div>
+
+  </section>
+
+</div>
+
+<script>
+
+let currentMode = "";
+
+let currentStops = [];
+
+let currentRoute = null;
+
+let currentStopIndex = 0;
+
+let watchId = null;
+
+// -------------------------
+
+// GENERAL NAVIGATION
+
+// -------------------------
+
+function hideAll() {
+
+  document.querySelectorAll("section").forEach(section => {
+
+    section.classList.add("hidden");
+
+  });
+
+}
+
+function goHome() {
+
+  if (watchId !== null) {
+
+    navigator.geolocation.clearWatch(watchId);
+
+    watchId = null;
+
+  }
+
+  hideAll();
+
+  document.getElementById("home").classList.remove("hidden");
+
+}
+
+// -------------------------
+
+// ROUTE BUILDER
+
+// -------------------------
+
+function openBuilder(mode) {
+
+  currentMode = mode;
+
+  currentStops = [];
+
+  hideAll();
+
+  document.getElementById("builder").classList.remove("hidden");
+
+  document.getElementById("builderTitle").textContent =
+
+    mode + " Route Builder";
+
+  document.getElementById("routeName").value = "";
+
+  document.getElementById("stopList").innerHTML = "";
+
+  startGPS();
+
+}
+
+function startGPS() {
+
+  if (!navigator.geolocation) {
+
+    document.getElementById("gpsStatus").textContent =
+
+      "❌ This device does not support GPS.";
+
+    return;
+
+  }
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(position) {
+
+      let lat = position.coords.latitude;
+
+      let lon = position.coords.longitude;
+
+      document.getElementById("gpsStatus").textContent =
+
+        "📍 GPS active: " +
+
+        lat.toFixed(6) +
+
+        ", " +
+
+        lon.toFixed(6);
+
+    },
+
+    function(error) {
+
+      document.getElementById("gpsStatus").textContent =
+
+        "⚠️ GPS permission/location unavailable. " +
+
+        error.message;
+
+    },
+
+    {
+
+      enableHighAccuracy: true,
+
+      timeout: 10000,
+
+      maximumAge: 0
+
+    }
+
+  );
+
+}
+
+function recordStop(type) {
+
+  if (!navigator.geolocation) {
+
+    alert("GPS is not available on this device.");
+
+    return;
+
+  }
+
+  document.getElementById("gpsStatus").textContent =
+
+    "📍 Getting precise GPS location...";
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(position) {
+
+      const stop = {
+
+        number: currentStops.length + 1,
+
+        type: type,
+
+        latitude: position.coords.latitude,
+
+        longitude: position.coords.longitude,
+
+        accuracy: position.coords.accuracy,
+
+        name: type + " " + (currentStops.length + 1)
+
+      };
+
+      currentStops.push(stop);
+
+      displayStops();
+
+      document.getElementById("gpsStatus").textContent =
+
+        "✅ " + type +
+
+        " recorded at GPS location.";
+
+    },
+
+    function(error) {
+
+      alert(
+
+        "Could not get GPS location.\n\n" +
+
+        error.message
+
+      );
+
+      document.getElementById("gpsStatus").textContent =
+
+        "❌ GPS recording failed.";
+
+    },
+
+    {
+
+      enableHighAccuracy: true,
+
+      timeout: 15000,
+
+      maximumAge: 0
+
+    }
+
+  );
+
+}
+
+function displayStops() {
+
+  const list = document.getElementById("stopList");
+
+  list.innerHTML = "<h3>Stops Recorded</h3>";
+
+  currentStops.forEach(function(stop) {
+
+    list.innerHTML += `
+
+      <div class="stop">
+
+        <strong>
+
+          ${stop.number}. ${stop.name}
+
+        </strong>
+
+        <br>
+
+        <small>
+
+          Type: ${stop.type}<br>
+
+          GPS: ${stop.latitude.toFixed(6)},
+
+          ${stop.longitude.toFixed(6)}<br>
+
+          Accuracy: ${Math.round(stop.accuracy)} meters
+
+        </small>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+function saveRoute() {
+
+  const routeName =
+
+    document.getElementById("routeName").value.trim();
+
+  if (!routeName) {
+
+    alert("Please enter a route name.");
+
+    return;
+
+  }
+
+  if (currentStops.length === 0) {
+
+    alert("Please record at least one stop.");
+
+    return;
+
+  }
+
+  const route = {
+
+    id: Date.now(),
+
+    name: routeName,
+
+    mode: currentMode,
+
+    stops: currentStops
+
+  };
+
+  let routes =
+
+    JSON.parse(localStorage.getItem("busRoutes") || "[]");
+
+  routes.push(route);
+
+  localStorage.setItem(
+
+    "busRoutes",
+
+    JSON.stringify(routes)
+
+  );
+
+  alert(
+
+    currentMode +
+
+    " route saved with " +
+
+    currentStops.length +
+
+    " stops."
+
+  );
+
+  goHome();
+
+}
+
+// -------------------------
+
+// SUBSTITUTE DRIVER
+
+// -------------------------
+
+function openSubstitute() {
+
+  hideAll();
+
+  document
+
+    .getElementById("substitute")
+
+    .classList.remove("hidden");
+
+  loadRouteChoices();
+
+}
+
+function loadRouteChoices() {
+
+  const select =
+
+    document.getElementById("routeSelect");
+
+  select.innerHTML = "";
+
+  const routes =
+
+    JSON.parse(
+
+      localStorage.getItem("busRoutes") || "[]"
+
+    );
+
+  if (routes.length === 0) {
+
+    select.innerHTML =
+
+      "<option>No routes saved yet</option>";
+
+    return;
+
+  }
+
+  routes.forEach(function(route) {
+
+    const option =
+
+      document.createElement("option");
+
+    option.value = route.id;
+
+    option.textContent =
+
+      route.name +
+
+      " — " +
+
+      route.mode;
+
+    select.appendChild(option);
+
+  });
+
+}
+
+function startNavigation() {
+
+  const routeId =
+
+    Number(
+
+      document.getElementById("routeSelect").value
+
+    );
+
+  const routes =
+
+    JSON.parse(
+
+      localStorage.getItem("busRoutes") || "[]"
+
+    );
+
+  currentRoute =
+
+    routes.find(route => route.id === routeId);
+
+  if (!currentRoute) {
+
+    alert("No route selected.");
+
+    return;
+
+  }
+
+  currentStopIndex = 0;
+
+  document
+
+    .getElementById("navigationPanel")
+
+    .classList.remove("hidden");
+
+  showCurrentStop();
+
+  startNavigationGPS();
+
+}
+
+function showCurrentStop() {
+
+  if (
+
+    !currentRoute ||
+
+    currentStopIndex >= currentRoute.stops.length
+
+  ) {
+
+    document.getElementById("nextStop").textContent =
+
+      "🎉 Route Complete";
+
+    document.getElementById("navigationStatus").textContent =
+
+      "All stops completed.";
+
+    return;
+
+  }
+
+  const stop =
+
+    currentRoute.stops[currentStopIndex];
+
+  document.getElementById("stopCounter").textContent =
+
+    (currentStopIndex + 1) +
+
+    " / " +
+
+    currentRoute.stops.length;
+
+  document.getElementById("nextStop").textContent =
+
+    stop.name;
+
+  document.getElementById("navigationStatus").textContent =
+
+    "Next stop: " +
+
+    stop.type;
+
+}
+
+function simulateArrival() {
+
+  if (!currentRoute) return;
+
+  const stop =
+
+    currentRoute.stops[currentStopIndex];
+
+  if (!stop) return;
+
+  document.getElementById("navigationStatus").textContent =
+
+    "✅ Arrived at " + stop.name;
+
+  setTimeout(function() {
+
+    currentStopIndex++;
+
+    showCurrentStop();
+
+  }, 1000);
+
+}
+
+// -------------------------
+
+// FUTURE GPS ARRIVAL SYSTEM
+
+// -------------------------
+
+function startNavigationGPS() {
+
+  if (!navigator.geolocation) return;
+
+  watchId =
+
+    navigator.geolocation.watchPosition(
+
+      function(position) {
+
+        if (
+
+          !currentRoute ||
+
+          currentStopIndex >= currentRoute.stops.length
+
+        ) {
+
+          return;
+
+        }
+
+        const currentStop =
+
+          currentRoute.stops[currentStopIndex];
+
+        const distance =
+
+          calculateDistance(
+
+            position.coords.latitude,
+
+            position.coords.longitude,
+
+            currentStop.latitude,
+
+            currentStop.longitude
+
+          );
+
+        document.getElementById("navigationStatus").textContent =
+
+          "GPS active • " +
+
+          Math.round(distance) +
+
+          " meters from next stop";
+
+        // Prototype arrival threshold.
+
+        // We will refine this later.
+
+        if (distance <= 50) {
+
+          document.getElementById("navigationStatus").textContent =
+
+            "✅ Arriving at " +
+
+            currentStop.name;
+
+          currentStopIndex++;
+
+          showCurrentStop();
+
+        }
+
+      },
+
+      function(error) {
+
+        document.getElementById("navigationStatus").textContent =
+
+          "GPS error: " + error.message;
+
+      },
+
+      {
+
+        enableHighAccuracy: true,
+
+        maximumAge: 2000,
+
+        timeout: 10000
+
+      }
+
+    );
+
+}
+
+// Haversine distance calculation.
+
+// Returns distance in meters.
+
+function calculateDistance(
+
+  lat1,
+
+  lon1,
+
+  lat2,
+
+  lon2
+
+) {
+
+  const R = 6371000;
+
+  const degreesToRadians =
+
+    Math.PI / 180;
+
+  const dLat =
+
+    (lat2 - lat1) *
+
+    degreesToRadians;
+
+  const dLon =
+
+    (lon2 - lon1) *
+
+    degreesToRadians;
+
+  const a =
+
+    Math.sin(dLat / 2) *
+
+    Math.sin(dLat / 2) +
+
+    Math.cos(lat1 * degreesToRadians) *
+
+    Math.cos(lat2 * degreesToRadians) *
+
+    Math.sin(dLon / 2) *
+
+    Math.sin(dLon / 2);
+
+  const c =
+
+    2 *
+
+    Math.atan2(
+
+      Math.sqrt(a),
+
+      Math.sqrt(1 - a)
+
+    );
+
+  return R * c;
+
+}
+
+// -------------------------
+
+// ADMIN DASHBOARD
+
+// -------------------------
+
+function openAdmin() {
+
+  hideAll();
+
+  document
+
+    .getElementById("admin")
+
+    .classList.remove("hidden");
+
+  displayAdminRoutes();
+
+}
+
+function displayAdminRoutes() {
+
+  const container =
+
+    document.getElementById("adminRoutes");
+
+  const routes =
+
+    JSON.parse(
+
+      localStorage.getItem("busRoutes") || "[]"
+
+    );
+
+  if (routes.length === 0) {
+
+    container.innerHTML =
+
+      "<p>No routes have been created.</p>";
+
+    return;
+
+  }
+
+  container.innerHTML = "";
+
+  routes.forEach(function(route) {
+
+    container.innerHTML += `
+
+      <div class="stop">
+
+        <strong>
+
+          ${route.name}
+
+        </strong>
+
+        <br>
+
+        ${route.mode} Route
+
+        <br>
+
+        ${route.stops.length} stops
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+</script>
+
+</body>
+
+</html>
