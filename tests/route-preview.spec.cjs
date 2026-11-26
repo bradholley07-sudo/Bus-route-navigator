@@ -62,6 +62,7 @@ const path = require("path");
       }]));
     });
 
+    await page.route("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", route => route.fulfill({ status: 200, contentType: "application/javascript", body: "" }));
     await page.goto("file://" + path.resolve("index.html"));
     await page.getByRole("button", { name: /Route Map \/ Edit Stops/ }).click();
 
