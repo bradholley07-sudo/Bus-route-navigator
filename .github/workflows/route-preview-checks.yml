@@ -24,7 +24,7 @@ jobs:
           inline = [script for script in scripts if script.strip()]
           if not inline:
               raise SystemExit("No inline JavaScript found")
-          Path("/tmp/app-inline.js").write_text("\\n".join(inline))
+          Path("/tmp/app-inline.js").write_text("\n".join(inline))
           PY
           node --check /tmp/app-inline.js
       - name: Install browser test tools
